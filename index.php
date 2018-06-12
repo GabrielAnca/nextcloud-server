@@ -62,6 +62,18 @@ try {
 } catch (\OC\User\LoginException $ex) {
 	OC_Response::setStatus(OC_Response::STATUS_FORBIDDEN);
 	OC_Template::printErrorPage($ex->getMessage(), $ex->getMessage());
+} catch (Doctrine\DBAL\DBALException $ex) {
+	try {
+		\OC::$server->getLogger()->logException($ex, array('app' => 'index'));
+	} catch (\Exception $e) {
+	}
+
+	try {
+		OC_Response::setStatus(OC_Response::STATUS_INTERNAL_SERVER_ERROR);
+	} catch (\Exception $e) {
+	}
+
+	OC_Template::printExceptionErrorPage($ex);
 } catch (Exception $ex) {
 	\OC::$server->getLogger()->logException($ex, array('app' => 'index'));
 

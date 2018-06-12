@@ -356,9 +356,12 @@ class OC_Template extends \OC\Template\Base {
 			}
 			$content->printPage();
 		} catch (\Exception $e) {
-			$logger = \OC::$server->getLogger();
-			$logger->logException($exception, ['app' => 'core']);
-			$logger->logException($e, ['app' => 'core']);
+			try {
+				$logger = \OC::$server->getLogger();
+				$logger->logException($exception, ['app' => 'core']);
+				$logger->logException($e, ['app' => 'core']);
+			} catch (\Exception $e2) {
+			}
 
 			header(self::getHttpProtocol() . ' 500 Internal Server Error');
 			header('Content-Type: text/plain; charset=utf-8');
